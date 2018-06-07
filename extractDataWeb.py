@@ -7,7 +7,7 @@ def extract_translation(web):
 
 	translation_text = []
 	for i in range(len(translation)):
-		translation_text.append(translation[i].text)
+		translation_text.extend(translation[i].text.split(', '))
 
 	driver.close()
 
