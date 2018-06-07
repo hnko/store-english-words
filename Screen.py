@@ -3,6 +3,9 @@ from Word import *
 import sys, os, time
 from sendmessage import send_email
 from config import change_address_to, change_address_from
+from searchTranslation import search_translation, config_language
+from extractDataWeb import extract_translation
+import searchTranslation
 
 #name of the mail subject - in the function it adds the file name
 SUBJECT = 'english_notebook'
@@ -33,11 +36,12 @@ def main_screen():
              "(4) Show words\n" \
              "(5) Show Historical\n"\
              "(6) Send by email\n"\
-             "(7) Exit"
+             "(7) Translation\n"\
+             "(8) Exit"
 
     print(screen)
     user_option = input('>>> ')
-    while(user_option not in ['1', '2', '3', '4', '5', '6', '7']):
+    while(user_option not in ['1', '2', '3', '4', '5', '6', '7', '8']):
         user_option = input('>>> ')
 
     if user_option == '1':
@@ -52,6 +56,8 @@ def main_screen():
         show_historical()
     elif user_option == '6':
         show_send_email()
+    elif user_option == '7':
+        translation_screen()
     else:
         exit_screen()
 
@@ -159,6 +165,52 @@ def show_send_email():
         change_address_from(from_)
         os.system('clear')
         show_send_email()
+    else:
+        os.system('clear')
+        main_screen()
+
+def translation_screen():
+    """
+    show a open translation - if we search translation it opens the browser and search a translation
+    """
+    os.system('clear')
+    screen = "(1) Search translation\n"\
+             "(2) Config\n"\
+             "(3) Exit"
+    print(screen)
+
+    user_option = ('>>> ')
+    while(user_option not in ['1', '2', '3']):
+        user_option = input('>>> ')
+
+    if user_option == '1':
+        word_to_translate = input('(... word to translate ...) >>> ')
+        
+        translation = extract_translation(searchTranslation.WEBSITE+word_to_translate)
+        if len(translation) == 0:
+            print('There is no translation for ' + word_to_translate)
+        else:
+            print(word_to_translate +' means: ' + ', '.join(translation))
+            app.add(Word(word_to_translate, translation[:]))
+
+        answer = input("... press Enter to continue  or 'w' to go to the web ... ")
+        if answer == 'w' or answer == 'W':
+            search_translation(word_to_translate)    
+        os.system('clear')
+        translation_screen()
+
+    elif user_option == '2':
+        configuration = ''
+        while configuration not in ['1', '2']:
+            configuration = input('(1) english, spanish\n(2) spanish, english\n>>> ')
+        if configuration == '1':
+            from_, to = 'english', 'spanish'
+        else:
+            from_, to = 'spanish', 'english'
+            
+        config_language(from_, to)
+        os.system('clear')
+        translation_screen()
     else:
         os.system('clear')
         main_screen()
