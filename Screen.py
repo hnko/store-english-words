@@ -161,8 +161,8 @@ def show_send_email():
         os.system('clear')
         show_send_email()
     elif user_option == '3':
-        from_ = input('>>> ')
-        change_address_from(from_)
+        from_ = input('(email, password) >>> ').split(', ')
+        change_address_from(from_[0], from_[1])
         os.system('clear')
         show_send_email()
     else:
